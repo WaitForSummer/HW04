@@ -1,40 +1,52 @@
-name: GitHub Actions 
-run-name: ${{ github.actor }} test
+name: CI Build and Test
+
 on: [push]
+
 jobs:
-  Test:
+  linux-build:
+    name: Build and Test on Linux
     runs-on: ubuntu-latest
     steps:
-    - name: Check out repository code
+    - name: Checkout code
       uses: actions/checkout@v4
-    - name: Вывод содержимого директории
-      run: |
-        ls ${{ github.workspace }}
-    - name: CMake Action
-      uses: threeal/cmake-action@v2.1.0
-    - name: Компиляция
-      run: cmake -H. -Bbuild
-    - name: Компиляция2
-      run:  cmake --build build
-    - name: Вывод содержимого директории
-      run: |
-        ls ${{ github.workspace }}
-    - name: Тест
+    
+    - name: List workspace contents
+      run: ls -la ${{ github.workspace }}
+    
+    - name: Configure with CMake
+      run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+    
+    - name: Build project
+      run: cmake --build build --config Release --parallel 2
+    
+    - name: Run tests
+      working-directory: ./build
+      run: ctest --output-on-failure
+    
+    - name: Run hello executable
       working-directory: ./build/hello_world_application
       run: ./hello
-  Test_win:
+
+  windows-build:
+    name: Build and Test on Windows
     runs-on: windows-latest
     steps:
-    - name: Check out repository code
+    - name: Checkout code
       uses: actions/checkout@v4
-    - name: Вывод содержимого директории
+    
+    - name: List workspace contents
       run: dir ${{ github.workspace }}
-    - name: Setup CMake
-      uses: threeal/cmake-action@v2.1.0
-    - name: Компиляция
+    
+    - name: Configure with CMake
+      run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+    
+    - name: Build project
       run: cmake --build build --config Release
-    - name: Вывод содержимого директории
-      run: dir ${{ github.workspace }}\build
-    - name: Тест
+    
+    - name: Run tests
+      working-directory: ./build
+      run: ctest --output-on-failure
+    
+    - name: Run hello executable
       working-directory: ./build/hello_world_application/Release
       run: .\hello.exe
