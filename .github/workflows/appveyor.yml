@@ -1,0 +1,20 @@
+
+image: VS Code
+
+platform:
+  - x64
+
+environment:
+  matrix:
+    - GENERATOR: "Visual Studio 16 2019"
+    - GENERATOR: "MinGW Makefiles"
+
+install:
+  - choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
+  - if "%GENERATOR%"=="MinGW Makefiles" choco install mingw
+
+build_script:
+  - mkdir build
+  - cd build
+  - cmake -G "%GENERATOR%" -A x64 ..
+  - cmake --build . --config Release
