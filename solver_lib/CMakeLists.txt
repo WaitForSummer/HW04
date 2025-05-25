@@ -7,3 +7,4 @@ project(solver_lib)
 
 set(SOURCE_LIB solver.cpp)
 add_library(solver_lib STATIC solver.cpp)
+target_include_directories(solver_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

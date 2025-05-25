@@ -8,6 +8,7 @@ project(lab04)
 include_directories(
     ${CMAKE_SOURCE_DIR}/formatter_ex_lib
     ${CMAKE_SOURCE_DIR}/formatter_lib
+    ${CMAKE_SOURCE_DIR}/solver_lib
 )
 
 add_subdirectory(formatter_lib)
