@@ -9,13 +9,12 @@ jobs:
     steps:
     - name: Проверка кода
       uses: actions/checkout@v4
-    
-    - name: Add MSBuild to PATH
+      
+    - name: Установка MSBuild
       uses: microsoft/setup-msbuild@v1
-    
+      
     - name: Установка CMake
-      run: |
-        choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
+      uses: actions/setup-cmake@v3
       
     - name: Конфигурация CMake
       run: |
@@ -23,34 +22,38 @@ jobs:
         cd build
         cmake -G "Visual Studio 17 2022" -A x64 ..
         
-    - name: Build
+    - name: Build project
       run: |
         cd build
         cmake --build . --config Release --parallel 4
-    
-    - name: Проерка Build
+        
+    - name: Verify build output
       run: |
         echo "Checking build directory structure..."
         ls -R build
-      
-        if (Test-Path "build/Release/hello_world_application/hello.exe") {
-          echo "hello.exe found"
+        
+        if (Test-Path "build/hello_world_application/Release/hello_world.exe") {
+          echo "hello_world.exe found"
         } else {
-          echo "ERROR: hello.exe not found!"
+          echo "ERROR: hello_world.exe not found!"
           Get-ChildItem -Path build -Recurse -Filter *.exe | ForEach-Object { echo "Found: $($_.FullName)" }
           exit 1
         }
-      
-        if (Test-Path "build/Release/solver_application/solver.exe") {
+        
+        if (Test-Path "build/solver_application/Release/solver.exe") {
           echo "solver.exe found"
         } else {
-         echo "ERROR: solver.exe not found!"
-         exit 1
+          echo "ERROR: solver.exe not found!"
+          exit 1
         }
-        
       
     - name: Run tests
       run: |
-        cd build/Release
-        .\hello_world_application\hello.exe
-        .\solver_application\solver.exe
+        echo "Current directory: $(Get-Location)"
+        echo "Running hello_world:"
+        Start-Process -FilePath "build/hello_world_application/Release/hello_world.exe" -Wait -NoNewWindow
+        
+        echo "Running solver:"
+        Start-Process -FilePath "build/solver_application/Release/solver.exe" -Wait -NoNewWindow
+        
+        echo "All tests executed successfully"
