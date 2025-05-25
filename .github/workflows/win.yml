@@ -3,26 +3,32 @@ name: Windows CI
 on: [push, pull_request]
 
 jobs:
-  build:
+  build-windows:
     runs-on: windows-latest
+    
     steps:
     - name: Проверка кода
       uses: actions/checkout@v4
-
-    - name: Устновка CMake
-      uses: actions/setup-cmake@v3
-
+    
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v1
+    
+    - name: Установка CMake
+      uses: actions/setup-cmake@v1  # Используем стабильную версию v1
+      
     - name: Конфигурация CMake
       run: |
         mkdir build
-        cmake -B build -G "Visual Studio 17 2022" -A x64
-
+        cd build
+        cmake -G "Visual Studio 17 2022" -A x64 ..
+        
     - name: Build
       run: |
-        cmake --build build --config Release
-
+        cd build
+        cmake --build . --config Release
+        
     - name: Run tests
-      working-directory: ./build/Release
       run: |
+        cd build/Release
         .\hello_world_application\hello.exe
         .\solver_application\solver.exe
