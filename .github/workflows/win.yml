@@ -26,8 +26,29 @@ jobs:
     - name: Build
       run: |
         cd build
-        cmake --build . --config Release
+        cmake --build . --config Release --parallel 4
+    
+    - name: Проерка Build
+      run: |
+        echo "Checking build directory structure..."
+        ls -R build
+      
+        if (Test-Path "build/Release/hello_world_application/hello.exe") {
+          echo "hello.exe found"
+        } else {
+          echo "ERROR: hello.exe not found!"
+          Get-ChildItem -Path build -Recurse -Filter *.exe | ForEach-Object { echo "Found: $($_.FullName)" }
+          exit 1
+        }
+      
+        if (Test-Path "build/Release/solver_application/solver.exe") {
+          echo "solver.exe found"
+        } else {
+         echo "ERROR: solver.exe not found!"
+         exit 1
+        }
         
+      
     - name: Run tests
       run: |
         cd build/Release
