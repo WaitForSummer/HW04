@@ -1,0 +1,3 @@
+/home/wfs/WaitForSummer/workspace/projects/HW04/formatter_ex_lib/CMakeFiles/formatter_ex.dir
+/home/wfs/WaitForSummer/workspace/projects/HW04/formatter_ex_lib/CMakeFiles/edit_cache.dir
+/home/wfs/WaitForSummer/workspace/projects/HW04/formatter_ex_lib/CMakeFiles/rebuild_cache.dir
